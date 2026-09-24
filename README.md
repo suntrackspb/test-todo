@@ -27,6 +27,12 @@ NOTES_JWT_SECRET=$(openssl rand -hex 32) docker compose up -d --build
 
 Остановить: `docker compose down` (данные останутся в volume; `docker compose down -v` удалит и их).
 
+### Выставить наружу по домену (HTTPS)
+
+Контейнер `frontend` слушает только `127.0.0.1:8080`. Чтобы отдать приложение
+по домену с HTTPS, поставьте перед ним nginx на хосте — пример конфига:
+[deploy/nginx.reverse-proxy.example.conf](deploy/nginx.reverse-proxy.example.conf).
+
 ## Backend (без Docker)
 
 ```bash
