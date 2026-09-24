@@ -1,0 +1,76 @@
+:root {
+  --bg: #f6f7f8;
+  --surface: #ffffff;
+  --border: #e1e4e8;
+  --border-light: #eaeef2;
+  --text: #1f2328;
+  --muted: #57606a;
+  --faint: #8b949e;
+  --link: #0969da;
+  --danger: #cf222e;
+  --hover-bg: #eef1f4;
+  --active-bg: #dbe7ff;
+  --chip-todo-bg: #ddf4ff;
+  --chip-todo-text: #0969da;
+  --chip-note-bg: #fff1e5;
+  --chip-note-text: #9a6700;
+  --button-primary-bg: #1f2328;
+  --button-primary-text: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='dark'] {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --border-light: #21262d;
+  --text: #e6edf3;
+  --muted: #9198a1;
+  --faint: #6e7681;
+  --link: #4493f8;
+  --danger: #ff7b72;
+  --hover-bg: #1c2129;
+  --active-bg: #1f3a5f;
+  --chip-todo-bg: #122b3d;
+  --chip-todo-text: #6cb6ff;
+  --chip-note-bg: #3d2e12;
+  --chip-note-text: #e3b341;
+  --button-primary-bg: #e6edf3;
+  --button-primary-text: #0d1117;
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+}
+
+a {
+  color: inherit;
+}
