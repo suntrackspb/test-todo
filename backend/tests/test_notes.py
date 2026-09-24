@@ -54,6 +54,27 @@ def test_delete_note(client, auth_headers):
     assert client.get(f"/notes/{note['id']}", headers=auth_headers).status_code == 404
 
 
+def test_delete_note_removes_attachment_files(client, auth_headers):
+    from app.core.config import settings
+
+    project = _create_project(client, auth_headers)
+    note = client.post(f"/projects/{project['id']}/notes", json={"title": "N"}, headers=auth_headers).json()
+
+    upload_resp = client.post(
+        f"/notes/{note['id']}/attachments",
+        files={"file": ("pic.png", b"\x89PNG\r\n\x1a\n", "image/png")},
+        headers=auth_headers,
+    )
+    assert upload_resp.status_code == 201
+    relative_path = upload_resp.json()["file_path"]
+    file_path = settings.uploads_dir / relative_path
+    assert file_path.is_file()
+
+    del_resp = client.delete(f"/notes/{note['id']}", headers=auth_headers)
+    assert del_resp.status_code == 204
+    assert not file_path.exists()
+
+
 def test_cannot_access_notes_of_other_users_project(client, auth_headers, other_auth_headers):
     project = _create_project(client, auth_headers)
     note = client.post(f"/projects/{project['id']}/notes", json={"title": "N"}, headers=auth_headers).json()

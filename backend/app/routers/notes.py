@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.deps import get_current_user
 from app.database import get_db
 from app.models import Note, Project, User
@@ -81,5 +82,11 @@ def update_note(
 @router.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_note(note_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     note = _get_owned_note(db, note_id, user)
+    attachment_paths = [attachment.file_path for attachment in note.attachments]
+
     db.delete(note)
     db.commit()
+
+    for relative_path in attachment_paths:
+        file_path = settings.uploads_dir / relative_path
+        file_path.unlink(missing_ok=True)

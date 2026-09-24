@@ -8,8 +8,20 @@ todo со статусами, вставка изображений (с устр
 
 ## Запуск через Docker (рекомендуется)
 
+Образы бэкенда и фронтенда собираются в GitHub Actions при пуше в `main`
+(см. [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml))
+и публикуются в GitHub Container Registry:
+`ghcr.io/suntrackspb/test-todo-backend` / `test-todo-frontend`.
+На сервере деплоя ничего не собирается — `docker-compose.yml` просто их
+скачивает.
+
 ```bash
-docker compose up -d --build
+# пакеты в GHCR по умолчанию приватные — залогиньтесь один раз с PAT
+# (scope: read:packages), либо сделайте пакеты публичными в настройках репо
+echo "<GH_PAT>" | docker login ghcr.io -u <github-username> --password-stdin
+
+docker compose pull
+docker compose up -d
 
 # добавить пользователя внутри контейнера бэкенда
 docker compose exec backend python manage.py create-user <login> <password> ["Имя"]
@@ -19,13 +31,26 @@ docker compose exec backend python manage.py create-user <login> <password> ["И
 проксирует `/api/*` на backend-контейнер). БД и загруженные файлы хранятся в
 именованном volume `notes-data`, переживают пересоздание контейнеров.
 
-По умолчанию используется dev-секрет для JWT. Для продакшена задайте свой:
+По умолчанию используется dev-секрет для JWT. Для продакшена задайте свой
+(сохраните в `.env` рядом с `docker-compose.yml`, чтобы не терять при каждом деплое):
 
 ```bash
-NOTES_JWT_SECRET=$(openssl rand -hex 32) docker compose up -d --build
+echo "NOTES_JWT_SECRET=$(openssl rand -hex 32)" >> .env
+docker compose up -d
 ```
 
+Обновить до последней собранной версии: `docker compose pull && docker compose up -d`.
+
 Остановить: `docker compose down` (данные останутся в volume; `docker compose down -v` удалит и их).
+
+### Локальная сборка образов (без GHCR)
+
+Для разработки/тестирования, когда нужно собрать образы из текущих исходников
+вместо скачивания из реестра:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+```
 
 ### Выставить наружу по домену (HTTPS)
 

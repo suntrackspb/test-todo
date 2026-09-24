@@ -1,0 +1,15 @@
+# Оверлей для локальной сборки образов из исходников вместо их скачивания
+# с ghcr.io. Используется при разработке/тестировании:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+#
+# На сервере деплоя этот файл не нужен: docker-compose.yml сам по себе
+# просто тянет уже собранные GitHub Actions образы.
+services:
+  backend:
+    build: ./backend
+    image: ghcr.io/suntrackspb/test-todo-backend:local
+
+  frontend:
+    build: ./frontend
+    image: ghcr.io/suntrackspb/test-todo-frontend:local

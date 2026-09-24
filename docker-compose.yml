@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./backend
+    image: ghcr.io/suntrackspb/test-todo-backend:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
       NOTES_JWT_SECRET: ${NOTES_JWT_SECRET:-change-me-in-production}
@@ -10,7 +10,7 @@ services:
       - "8000"
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/suntrackspb/test-todo-frontend:${IMAGE_TAG:-latest}
     restart: unless-stopped
     depends_on:
       - backend
